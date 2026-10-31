@@ -1,0 +1,35 @@
+{
+    "selected_model": "SVM",
+    "labels": [
+        "Business",
+        "Science",
+        "Social Science"
+    ],
+    "metrics": {
+        "accuracy": 0.9305164319248826,
+        "precision_macro": 0.9313688266156569,
+        "recall_macro": 0.9282075584570929,
+        "f1_macro": 0.9294923504498329,
+        "f1_weighted": 0.9302655706586355
+    },
+    "class_counts": {
+        "Science": 1983,
+        "Social Science": 1766,
+        "Business": 1575
+    },
+    "train_class_counts": {
+        "Science": 1586,
+        "Social Science": 1413,
+        "Business": 1260
+    },
+    "test_class_counts": {
+        "Science": 397,
+        "Social Science": 353,
+        "Business": 315
+    },
+    "dataset_rows": 5324,
+    "train_rows": 4259,
+    "test_rows": 1065,
+    "cv_folds": 3,
+    "selection_metric": "Mean cross-validation Macro-F1"
+}
