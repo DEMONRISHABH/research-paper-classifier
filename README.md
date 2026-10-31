@@ -1,24 +1,145 @@
 # Research Article Classification
 
-An end-to-end machine learning project that classifies research-paper abstracts into:
+A machine learning project that automatically classifies research paper abstracts into three academic domains:
 
-- Science
-- Business
-- Social Science
+- **Science**
+- **Business**
+- **Social Science**
 
-The project compares six classifiers required by the assignment: Logistic Regression, Decision Tree, Naive Bayes, k-Nearest Neighbors (kNN), Support Vector Machine (SVM), and Random Forest.
+The project compares six machine learning algorithms, evaluates their performance, and provides an interactive Streamlit application for classifying individual research abstracts or performing batch predictions using CSV files.
 
-## Project structure
+## Live Demo
+
+🚀 **Try the application:**  
+https://research-paper-classifier-omgcr9q8y8kvtbpf4pvq9f.streamlit.app/
+
+The application provides:
+- Model performance dashboard
+- Comparison of six machine learning algorithms
+- Confusion matrix visualization
+- Single research abstract prediction
+- Batch prediction through CSV upload
+- Downloadable prediction results
+
+## Project Overview
+
+Research articles are published across a wide range of academic disciplines. Manually identifying the domain of a research paper can be time-consuming, especially when dealing with large collections of publications.
+
+This project uses Natural Language Processing (NLP) and supervised machine learning techniques to classify research paper abstracts into one of three predefined categories.
+
+The classification is based on the textual content of research abstracts rather than manually assigned keywords.
+
+## Dataset
+
+The dataset was collected from **Scopus** and consists of research article and review abstracts.
+
+| Category | Number of Abstracts |
+|---|---:|
+| Science | 1,983 |
+| Social Science | 1,766 |
+| Business | 1,575 |
+| **Total** | **5,324** |
+
+### Dataset Preprocessing
+
+The following preprocessing operations were performed:
+
+1. Combined the three domain-specific datasets.
+2. Removed records with missing abstracts.
+3. Retained only Article and Review document types.
+4. Removed duplicate records using EID.
+5. Identified and removed records with conflicting domain labels.
+6. Removed duplicate abstracts across categories.
+7. Excluded abstracts containing fewer than 30 words.
+
+The final dataset contains **5,324 labeled research abstracts**.
+
+## Methodology
+
+The project follows a standard NLP-based text classification pipeline.
+
+### 1. Text Preprocessing
+
+The following NLP techniques are applied:
+
+- Lowercasing
+- Regular expression-based tokenization
+- Stopword removal using NLTK
+- WordNet lemmatization
+
+### 2. Feature Extraction
+
+**TF-IDF (Term Frequency–Inverse Document Frequency)** is used to convert textual abstracts into numerical feature vectors.
+
+Configuration:
+
+| Parameter | Value |
+|---|---|
+| N-gram range | (1, 2) |
+| Maximum features | 20,000 |
+| Minimum document frequency | 2 |
+| Maximum document frequency | 0.95 |
+| Sublinear TF | True |
+
+Unigrams and bigrams are considered to capture both individual words and meaningful two-word expressions.
+
+### 3. Machine Learning Algorithms
+
+Six classification algorithms are implemented and compared:
+
+| Algorithm | Description |
+|---|---|
+| Logistic Regression | Linear classification model suitable for high-dimensional text data |
+| Decision Tree | Tree-based model that learns decision rules |
+| Multinomial Naive Bayes | Probabilistic classifier commonly used for text classification |
+| K-Nearest Neighbors | Classifies documents based on similarity with neighboring samples |
+| Support Vector Machine | Linear SVM classifier using LinearSVC |
+| Random Forest | Ensemble of decision trees |
+
+### 4. Model Training and Selection
+
+- Dataset is divided into training and testing sets using an 80:20 stratified split.
+- Stratified 3-fold cross-validation is performed on the training data.
+- Macro-F1 score is used as the primary model selection metric.
+- The model with the highest mean cross-validation Macro-F1 score is selected.
+- The selected model is evaluated on the held-out test dataset.
+
+## Evaluation Metrics
+
+The models are evaluated using the following metrics:
+
+- **Accuracy:** Overall proportion of correctly classified abstracts.
+- **Precision:** Proportion of predicted positive classifications that are correct.
+- **Recall:** Proportion of actual positive classifications correctly identified.
+- **F1-Score:** Harmonic mean of precision and recall.
+- **Macro-F1:** Average F1-score across all classes, giving equal importance to each class.
+
+The project also generates:
+
+- Classification report
+- Confusion matrix
+- Model comparison visualization
+- Cross-validation performance comparison
+
+All evaluation results are generated when the training pipeline is executed.
+
+## Project Structure
 
 ```text
 research_article_classifier/
+│
 ├── app.py
 ├── requirements.txt
 ├── README.md
+│
+├── Research_Article_Classification.ipynb
+│
 ├── data/
 │   └── cleaned_scopus_research_abstracts.csv
+│
 ├── artifacts/
-│   └── (generated after training)
+│   └── Generated model and evaluation artifacts
+│
 └── src/
     ├── __init__.py
     ├── data_utils.py
@@ -28,153 +149,151 @@ research_article_classifier/
     └── train.py
 ```
 
-## Dataset
+## Installation and Setup
 
-The included cleaned dataset is derived from the three Scopus-exported category files supplied for this assignment. It contains an `Abstract` column and a `label` column.
-
-The labels are:
-
-- `Science`
-- `Business`
-- `Social Science`
-
-The training script reads the CSV, validates required columns, removes empty abstracts and duplicate abstracts, and uses a stratified train-test split.
-
-Before submission, retain the original Scopus export provenance and follow the applicable Scopus/Elsevier terms for storage, redistribution and publication of abstracts.
-
-## Models
-
-The following six models are evaluated:
-
-1. Logistic Regression
-2. Decision Tree
-3. Multinomial Naive Bayes
-4. k-Nearest Neighbors
-5. Linear Support Vector Machine
-6. Random Forest
-
-## NLP and feature extraction
-
-NLTK is used for:
-
-- Lowercase normalization
-- Regular-expression tokenization
-- English stopword removal
-- WordNet lemmatization
-
-TF-IDF converts the cleaned tokens into numerical text features using unigrams and bigrams. The TF-IDF vectorizer is inside each scikit-learn Pipeline, so it is fitted separately inside each cross-validation fold and only on training data during final evaluation.
-
-## Installation
-
-Python 3.10 or newer is recommended.
+### 1. Clone the Repository
 
 ```bash
-python -m venv .venv
+git clone https://github.com/DEMONRISHABH/research-paper-classifier.git
+
+cd research-paper-classifier
 ```
 
-Activate the environment:
+### 2. Create a Virtual Environment
 
-**macOS/Linux**
 ```bash
-source .venv/bin/activate
+python -m venv venv
 ```
 
-**Windows**
+Activate the environment.
+
+**Windows:**
+
 ```bash
-.venv\Scripts\activate
+venv\Scripts\activate
 ```
 
-Install dependencies:
+**macOS/Linux:**
+
+```bash
+source venv/bin/activate
+```
+
+### 3. Install Dependencies
 
 ```bash
 pip install -r requirements.txt
 ```
 
-NLTK resources are downloaded automatically when the preprocessing module is first used. If your environment blocks automatic downloads, run:
+### 4. Train and Evaluate Models
 
-```bash
-python -c "import nltk; nltk.download('stopwords'); nltk.download('wordnet'); nltk.download('omw-1.4')"
-```
-
-## Train and compare models
-
-From the project root:
+Run the training pipeline:
 
 ```bash
 python -m src.train
 ```
 
-Optional arguments:
+This will:
 
-```bash
-python -m src.train --data data/cleaned_scopus_research_abstracts.csv --test-size 0.2 --cv-folds 3 --random-state 42
-```
+- Load and preprocess the dataset.
+- Generate TF-IDF features.
+- Train all six machine learning algorithms.
+- Perform stratified cross-validation.
+- Select the best-performing model using Macro-F1.
+- Evaluate the selected model on the test dataset.
+- Save the trained model and evaluation results.
+- Generate model comparison and confusion matrix visualizations.
 
-The script:
+Generated artifacts are saved in the `artifacts/` directory.
 
-1. Loads and validates the labeled dataset.
-2. Creates a stratified train-test split.
-3. Runs stratified cross-validation for each classifier.
-4. Selects the model with the highest mean cross-validation Macro-F1.
-5. Fits the selected model on the full training split.
-6. Evaluates it once on the held-out test split.
-7. Saves the model, metrics, classification report, model comparison and confusion matrix.
-
-Generated files are saved in `artifacts/`:
-
-- `best_model.joblib`
-- `results.json`
-- `model_comparison.csv`
-- `model_comparison.png`
-- `classification_report.csv`
-- `confusion_matrix.csv`
-- `confusion_matrix.png`
-
-The test set is not used for model selection. Macro-F1 is the primary selection metric because it gives equal weight to each class.
-
-## Run the Streamlit app
-
-Train the models first. Then run:
+### 5. Launch the Streamlit Application
 
 ```bash
 streamlit run app.py
 ```
 
-### App features
+Open the local URL displayed in the terminal to access the application.
 
-**Landing page**
-- Selected model and held-out test metrics
-- Sample counts for Science, Business and Social Science
-- Cross-validation model comparison
-- Confusion matrix for the selected model
+## Application Features
 
-**Single abstract prediction**
-- Upload one `.txt` file or paste an abstract
-- Receive the predicted category
-- Display a confidence value only when the selected estimator supports `predict_proba`
+### 1. Performance Dashboard
 
-**Batch CSV prediction**
-- Upload a CSV containing an abstract column
-- Select the abstract column if it is not automatically detected
-- Predict labels for all non-empty rows
-- Download a CSV containing the original data and predicted labels
+The dashboard displays:
 
-## Google Colab notebook
+- Selected machine learning model
+- Test accuracy
+- Precision, recall and F1-score
+- Model comparison
+- Confusion matrix
+- Dataset and train/test distribution
 
-The companion notebook `Research_Article_Classification.ipynb` contains the exploratory data analysis, preprocessing, cross-validation, model comparison, final evaluation and artifact export workflow.
+### 2. Single Abstract Classification
 
-Upload `cleaned_scopus_research_abstracts.csv` when prompted if it is not already in the Colab working directory.
+Users can:
 
-## Methodological notes and limitations
+- Paste a research paper abstract.
+- Upload a `.txt` file containing an abstract.
+- Generate a predicted academic category.
 
-- The three labels are inherited from the supplied source datasets. Interdisciplinary papers may not have an unambiguous single label.
-- The cleaned dataset should be checked for duplicate abstracts and conflicting identifiers before final submission.
-- A stratified split preserves class proportions but does not remove possible source, journal or author-related bias.
-- TF-IDF is a sparse lexical representation, not a contextual language-model embedding.
-- The classifier predicts one of the three classes; it does not establish the true disciplinary identity of an interdisciplinary paper.
-- Confidence values from `predict_proba` are model scores and should not automatically be interpreted as calibrated probabilities.
-- Results must be generated by running the notebook or training script; do not report illustrative or invented scores.
+The application predicts one of the following:
 
-## Reproducibility
+- Science
+- Business
+- Social Science
 
-The random seed defaults to 42. The training script records class counts, split sizes, cross-validation scores and held-out test metrics in the generated artifacts.
+### 3. Batch Classification
+
+Users can upload a CSV file containing multiple research abstracts.
+
+The application allows users to:
+
+1. Upload a CSV file.
+2. Select the column containing abstracts.
+3. Generate predictions for all records.
+4. Download the resulting CSV with predicted categories.
+
+## Technologies Used
+
+| Technology | Purpose |
+|---|---|
+| Python | Core programming language |
+| Pandas | Dataset manipulation |
+| NumPy | Numerical operations |
+| NLTK | Text preprocessing and lemmatization |
+| Scikit-learn | Machine learning and evaluation |
+| TF-IDF | Text feature extraction |
+| Matplotlib | Visualization |
+| Seaborn | Confusion matrix visualization |
+| Streamlit | Interactive web application |
+| Joblib | Model serialization |
+| Google Colab / Jupyter Notebook | Model development and experimentation |
+
+## Limitations
+
+- The model is trained on Scopus research abstracts and may not generalize equally well to papers from other publication sources.
+- Classification depends on the quality and completeness of the abstract.
+- Some research papers naturally belong to multiple academic disciplines, whereas this project uses a single-label classification approach.
+- TF-IDF captures word-frequency patterns but does not fully understand contextual meaning or deeper semantic relationships.
+- Model performance may vary depending on the distribution of unseen research abstracts.
+
+## Future Improvements
+
+- Experiment with transformer-based models such as BERT and SciBERT.
+- Explore contextual embeddings for improved semantic understanding.
+- Extend the classifier to support multi-label classification.
+- Increase dataset diversity across academic domains.
+- Introduce confidence scores and explainable predictions.
+- Deploy the application with a scalable backend.
+
+## Contributors
+
+**Rishabh Sachan**
+
+M.Tech Data Science  
+Indian Institute of Technology Roorkee
+
+GitHub: [DEMONRISHABH](https://github.com/DEMONRISHABH)
+
+---
+
+⭐ If you find this project useful, consider giving the repository a star!
